@@ -1,0 +1,35 @@
+server:
+  port: 1981 #服务端口
+
+spring:
+  application:
+    name: itcast-microservice-api-gateway #指定服务名
+zuul:
+  routes:
+    sso-service: #sso-service单点登录
+      path: /user/** #配置请求URL的请求规则
+      serviceId: eureka-consumer
+    item-service: #item-service商品管理
+      path: /users/** #配置请求URL的请求规则
+#      url: http://127.0.0.1:8081 #真正的微服务地址
+      serviceId: eureka-provider
+
+eureka:
+  client:
+    registerWithEureka: true #是否将自己注册到Eureka服务中，默认为true
+    fetchRegistry: true #是否从Eureka中获取注册信息，默认为true
+    serviceUrl: #Eureka客户端与Eureka服务端进行交互的地址
+      defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
+  instance:
+    prefer-ip-address:  true  #将自己的ip地址注册到Eureka服务中
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port} #指定实例id
+
+logging:
+  level:
+    root: info
+#    org.springframework.web: DEBUG
+  file: /log/log/my_gateway.log
+  pattern:
+    console: "%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n"
+    file: "%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n"
